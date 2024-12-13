@@ -1,9 +1,16 @@
+import { useNavigate } from "react-router-dom";
+
 const TopBanner = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-row justify-end text-xs gap-x-2">
       <div className="flex flex-row">
         <p className="text-gray-500">want to join?</p>
-        <p className="text-[#336699] mx-1 hover:underline hover:cursor-pointer">
+        <p
+          className="text-[#336699] mx-1 hover:underline hover:cursor-pointer"
+          onClick={() => navigate("/register")}
+        >
           register
         </p>
         <p className="text-gray-500">in seconds</p>
