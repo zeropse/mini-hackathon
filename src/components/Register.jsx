@@ -9,16 +9,19 @@ const Register = () => {
       <div className="flex flex-col items-center justify-center space-y-4 bg-white p-6 rounded-lg shadow-lg border-2 border-gray-500">
         <input
           type="text"
+          id="username"
           placeholder="Username"
           className="w-72 p-2 border-2 rounded-md"
         />
         <input
           type="password"
+          id="password"
           placeholder="Password"
           className="w-72 p-2 border-2 rounded-md"
         />
         <input
           type="password"
+          id="confirmPassword"
           placeholder="Confirm Password"
           className="w-72 p-2 border-2 rounded-md"
         />

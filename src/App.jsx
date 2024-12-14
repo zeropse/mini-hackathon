@@ -14,10 +14,10 @@ const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<RootLayout />}>
-        <Route index />
+        <Route index element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/post" element={<Post />} />
+        <Route path="/new-post" element={<Post />} />
       </Route>
     )
   );

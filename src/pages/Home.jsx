@@ -1,8 +1,15 @@
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import PostBanner from "../components/PostBanner";
+
+const PostList = () => {
+  return console.log("test post list");
+};
 
 const Home = () => {
-  return <div></div>;
+  return (
+    <div>
+      <PostList />
+    </div>
+  );
 };
 
 export default Home;
