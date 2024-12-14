@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 
-const PostBanner = ({ title, time, username, comments }) => {
+const PostBanner = ({ title, username }) => {
   const [votes, setVotes] = useState(0);
 
   const handleUpvote = () => setVotes((prevVotes) => prevVotes + 1);
@@ -33,11 +33,9 @@ const PostBanner = ({ title, time, username, comments }) => {
         <h1 className="text-blue-800 cursor-pointer hover:underline w-fit">
           {title}
         </h1>
-        <div className="flex items-center gap-1 text-xs text-gray-500">
-          <p>Posted {time} ago by</p>
-          <p className="cursor-pointer hover:underline w-fit">{username}</p>
-          <p className="bg-gray-200 px-2 py-1 rounded">{comments} comments</p>
-        </div>
+        <p className="cursor-pointer hover:underline text-xs text-gray-500">
+          Posted by {username}
+        </p>
       </div>
     </div>
   );
@@ -45,9 +43,7 @@ const PostBanner = ({ title, time, username, comments }) => {
 
 PostBanner.propTypes = {
   title: PropTypes.string.isRequired,
-  time: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
-  comments: PropTypes.number.isRequired,
 };
 
 export default PostBanner;

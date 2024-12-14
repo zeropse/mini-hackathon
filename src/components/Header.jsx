@@ -1,16 +1,14 @@
 import logo from "../assets/reddit.com.header.png";
 import RetroButton from "./RetroButton";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import useAuth from "../hooks/useAuth";
 
 const Header = () => {
   const navigate = useNavigate();
+  const { loggedIn, logout } = useAuth();
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // Logout handler function
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    logout();
     navigate("/");
   };
 
@@ -39,7 +37,7 @@ const Header = () => {
         </span>
       </div>
       <div className="flex flex-row items-end gap-1">
-        {isLoggedIn ? (
+        {loggedIn ? (
           <>
             <RetroButton
               label="new post"
