@@ -3,7 +3,7 @@ import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import RetroButton from "./RetroButton";
 
-const Post = () => {
+const NewPost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
@@ -66,4 +66,4 @@ const Post = () => {
   );
 };
 
-export default Post;
+export default NewPost;
