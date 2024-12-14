@@ -6,9 +6,8 @@ CREATE TABLE users (
 
 CREATE TABLE posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title VARCHAR(255) NOT NULL,
-    username VARCHAR(255),
-    FOREIGN KEY (username) REFERENCES users(username)
+    title TEXT NOT NULL,
+    username TEXT NOT NULL,
 );
 
 

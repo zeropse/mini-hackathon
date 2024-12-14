@@ -6,19 +6,18 @@ import jwt from "jsonwebtoken";
 
 const app = express();
 const port = process.env.PORT || 3000;
-const JWT_SECRET = "your-secret-key"; // Secret key for JWT signing (you can use an env variable)
+const JWT_SECRET = "your-secret-key";
 
 // Middleware
 app.use(cors());
-app.use(express.json()); // This is required to parse JSON data from the body
+app.use(express.json());
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, "dist")));
 
-// Database setup
+// Db
 const db = new sqlite3.Database("./src/db/database.db");
 
-// Create tables if they don't exist
 db.run(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -54,7 +53,6 @@ app.post("/register", (req, res) => {
       return res.status(400).json({ message: "Username already taken." });
     }
 
-    // Insert user into the database
     const stmt = db.prepare(
       "INSERT INTO users (username, password) VALUES (?, ?)"
     );
@@ -67,7 +65,7 @@ app.post("/register", (req, res) => {
 
       // Generate a JWT token
       const token = jwt.sign({ userId: this.lastID, username }, JWT_SECRET, {
-        expiresIn: "1h", // Token expires in 1 hour
+        expiresIn: "7d", // Token expires in 7 days
       });
 
       res.status(201).json({ message: "User registered successfully!", token });
@@ -85,7 +83,6 @@ app.post("/login", (req, res) => {
       .json({ message: "Username and password are required." });
   }
 
-  // Fetch user by username
   db.get(
     "SELECT id, username, password FROM users WHERE username = ?",
     [username],
@@ -99,7 +96,6 @@ app.post("/login", (req, res) => {
           .json({ message: "Invalid username or password." });
       }
 
-      // Check if the password matches
       if (row.password !== password) {
         return res
           .status(400)
@@ -111,7 +107,7 @@ app.post("/login", (req, res) => {
         { userId: row.id, username: row.username },
         JWT_SECRET,
         {
-          expiresIn: "1h", // Token expires in 1 hour
+          expiresIn: "7d", // Token expires in 7 days
         }
       );
 
@@ -122,7 +118,11 @@ app.post("/login", (req, res) => {
 
 // API route for fetching posts
 app.get("/api/posts", (req, res) => {
-  const query = "SELECT id, title, username FROM posts ORDER BY id DESC";
+  const query = `
+    SELECT id, title, username
+    FROM posts 
+    ORDER BY id DESC
+  `;
 
   db.all(query, [], (err, rows) => {
     if (err) {
@@ -132,12 +132,10 @@ app.get("/api/posts", (req, res) => {
   });
 });
 
-// Catch-all for React frontend
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-// Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
