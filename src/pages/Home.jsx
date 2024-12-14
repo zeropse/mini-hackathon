@@ -1,11 +1,8 @@
-import PageLogin from "../components/PageLogin";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const Home = () => {
-  return (
-    <div>
-      <PageLogin />
-    </div>
-  );
+  return <div></div>;
 };
 
 export default Home;
