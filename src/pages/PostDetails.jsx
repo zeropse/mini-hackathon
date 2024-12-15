@@ -1,15 +1,23 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import RetroButton from "../components/RetroButton";
 
 const PostDetails = () => {
-  const { username, id } = useParams(); // Get both username and id from the URL
-  const [post, setPost] = useState(null); // State to hold post data
-  const [loading, setLoading] = useState(true); // To track loading state
-  const [error, setError] = useState(null); // To track any errors
+  const { username, id } = useParams();
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
 
   useEffect(() => {
-    // Fetch the post data when the component is mounted or `username` or `id` changes
-    fetch(`/api/posts/${username}/${id}`)
+    const token = localStorage.getItem("token");
+
+    fetch(`/api/posts/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Post not found");
@@ -17,42 +25,175 @@ const PostDetails = () => {
         return response.json();
       })
       .then((data) => {
-        setPost(data); // Update the state with the fetched data
-        setLoading(false); // Set loading to false once data is fetched
+        setPost(data);
+        setComments(data.comments || []);
+        setLoading(false);
       })
       .catch((err) => {
-        setError(err.message); // Set error message if any error occurs
+        setError(err.message);
         setLoading(false);
       });
-  }, [username, id]);
+  }, [id]);
 
-  // Loading, error, and data display logic
+  const handleAddComment = () => {
+    if (!newComment.trim()) return;
+
+    const token = localStorage.getItem("token");
+
+    fetch(`/api/posts/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ comment: newComment }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to add comment");
+        }
+        return response.json();
+      })
+      .then((updatedPost) => {
+        setComments(updatedPost.comments);
+        setNewComment("");
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Failed to add comment");
+      });
+  };
+
   if (loading) {
-    return <p className="text-center text-xl text-gray-600">Loading...</p>;
+    return (
+      <p
+        style={{
+          fontFamily: "Verdana, sans-serif",
+          textAlign: "center",
+          fontSize: "16px",
+          color: "#333",
+        }}
+      >
+        Loading...
+      </p>
+    );
   }
 
   if (error) {
-    return <p className="text-center text-xl text-red-500">Error: {error}</p>;
+    return (
+      <p
+        style={{
+          fontFamily: "Verdana, sans-serif",
+          textAlign: "center",
+          fontSize: "16px",
+          color: "red",
+        }}
+      >
+        Error: {error}
+      </p>
+    );
   }
 
-  // Return post details if data is loaded
   return (
-    <div className="flex items-center justify-center my-4">
-      <div className="max-w-3xl mx-auto p-4 bg-white shadow-md rounded-md">
-        <div className="border-b-2 pb-4 mb-4">
-          <h1 className="text-4xl font-semibold text-gray-800">{post.title}</h1>
-          <p className="text-lg text-gray-500 mt-2">
-            Posted by{" "}
-            <span className="font-bold text-blue-500">@{post.username}</span>
+    <div
+      style={{
+        fontFamily: "Verdana, sans-serif",
+        margin: "20px auto",
+        maxWidth: "800px",
+        backgroundColor: "#f4f4f4",
+        padding: "10px",
+        border: "1px solid #ccc",
+      }}
+    >
+      <div
+        style={{
+          borderBottom: "2px solid #ccc",
+          paddingBottom: "10px",
+          marginBottom: "10px",
+        }}
+      >
+        <h1 style={{ fontSize: "24px", color: "#000" }}>{post.title}</h1>
+        <p style={{ fontSize: "14px", color: "#555" }}>
+          Posted by{" "}
+          <span style={{ fontWeight: "bold", color: "#0066cc" }}>
+            @{post.username}
+          </span>
+        </p>
+      </div>
+
+      <div style={{ color: "#333" }}>
+        <p>{post.content}</p>
+      </div>
+
+      <div
+        style={{
+          marginTop: "20px",
+          borderTop: "2px solid #ccc",
+          paddingTop: "10px",
+          textAlign: "center",
+          fontSize: "12px",
+          color: "#555",
+        }}
+      >
+        <p style={{ fontStyle: "italic" }}>
+          Part of codedex.io's holiday hackathon
+        </p>
+      </div>
+
+      {/* Comments Section */}
+      <div style={{ marginTop: "20px" }}>
+        <h2 style={{ fontSize: "20px", color: "#000", marginBottom: "10px" }}>
+          Comments
+        </h2>
+
+        {comments.length > 0 ? (
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            {comments.map((comment, index) => (
+              <li
+                key={index}
+                style={{
+                  marginBottom: "10px",
+                  padding: "10px",
+                  backgroundColor: "#fff",
+                  border: "1px solid #ccc",
+                  color: "#333",
+                }}
+              >
+                <p>{comment.content}</p>
+                <p
+                  style={{ fontSize: "12px", color: "#555", marginTop: "5px" }}
+                >
+                  - {comment.username || "Anonymous"}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p style={{ color: "#555" }}>
+            No comments yet. Be the first to comment!
           </p>
-        </div>
+        )}
 
-        <div className="text-gray-700">
-          <p>{post.content}</p>
-        </div>
-
-        <div className="mt-6 border-t-2 pt-4 text-sm text-gray-500 text-center">
-          <p className="italic">Part of codedex.io&apos;s holiday hackathon</p>
+        {/* Add new comment */}
+        <div style={{ marginTop: "10px" }}>
+          <textarea
+            style={{
+              width: "100%",
+              padding: "5px",
+              border: "1px solid #ccc",
+              borderRadius: "2px",
+              fontFamily: "Verdana, sans-serif",
+              fontSize: "14px",
+            }}
+            rows="4"
+            placeholder="Write your comment here..."
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+          ></textarea>
+          <RetroButton
+            onClick={handleAddComment}
+            label="Add Comment"
+          ></RetroButton>
         </div>
       </div>
     </div>

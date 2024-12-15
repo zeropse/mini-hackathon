@@ -24,7 +24,7 @@ const NewPost = () => {
     }
 
     try {
-      const response = await fetch("/api/posts", {
+      const response = await fetch("/api/post", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -19,7 +19,7 @@ const Posts = () => {
             key={post.id} // Use 'id' for key
             title={post.title}
             username={post.username}
-            to={`/${post.username}/${post.id}`} // Use 'id' in dynamic link
+            to={`/post/${post.id}`} // Use 'id' in dynamic link
           />
         ))
       ) : (
