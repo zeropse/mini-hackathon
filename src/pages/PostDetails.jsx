@@ -174,7 +174,6 @@ const PostDetails = () => {
           </p>
         )}
 
-        {/* Add new comment */}
         <div style={{ marginTop: "10px" }}>
           <textarea
             style={{

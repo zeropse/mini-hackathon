@@ -233,6 +233,32 @@ app.get("/api/posts/:id", async (req, res) => {
   }
 });
 
+// Search route
+app.get("/api/search", async (req, res) => {
+  const query = req.query.query || "";
+
+  try {
+    let posts;
+
+    if (query.startsWith("@")) {
+      // Search by username
+      const username = query.slice(1); // Remove '@' from the query
+      posts = await Post.find({
+        username: { $regex: `^${username}`, $options: "i" }, // Search usernames case-insensitively
+      });
+    } else {
+      // Search by title
+      posts = await Post.find({
+        title: { $regex: query, $options: "i" }, // Search titles case-insensitively
+      });
+    }
+
+    res.status(200).json(posts);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch posts.", err });
+  }
+});
+
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });

@@ -2,14 +2,22 @@ import logo from "../assets/reddit.com.header.png";
 import RetroButton from "./RetroButton";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { useState } from "react";
 
 const Header = () => {
   const navigate = useNavigate();
   const { loggedIn, logout } = useAuth();
+  const [searchInput, setSearchInput] = useState("");
 
   const handleLogout = () => {
     logout();
     window.location.href = "/";
+  };
+
+  const handleSearch = () => {
+    if (searchInput.trim()) {
+      navigate(`/search?query=${encodeURIComponent(searchInput.trim())}`);
+    }
   };
 
   return (
@@ -60,8 +68,15 @@ const Header = () => {
           type="text"
           placeholder="Search"
           className="border border-black"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
         />
-        <RetroButton label="search" />
+        <RetroButton label="search" onClick={handleSearch} />
       </div>
     </div>
   );

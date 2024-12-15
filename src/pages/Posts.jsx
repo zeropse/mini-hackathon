@@ -16,10 +16,10 @@ const Posts = () => {
       {posts.length > 0 ? (
         posts.map((post) => (
           <PostBanner
-            key={post.id} // Use 'id' for key
+            key={post.id}
             title={post.title}
             username={post.username}
-            to={`/post/${post.id}`} // Use 'id' in dynamic link
+            to={`/post/${post.id}`}
           />
         ))
       ) : (

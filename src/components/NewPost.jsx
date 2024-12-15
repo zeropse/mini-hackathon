@@ -39,7 +39,6 @@ const NewPost = () => {
         setStatusMessage("Posted!");
         setStatusType("success");
 
-        // Clear title and content after successful post
         setTitle("");
         setContent("");
       } else {
@@ -53,13 +52,11 @@ const NewPost = () => {
       setStatusType("error");
     }
 
-    // Clear status message after 10 seconds
     setTimeout(() => {
       setStatusMessage("");
     }, 10000);
   };
 
-  // Use memoized options for SimpleMDE
   const simpleMDEOptions = useMemo(
     () => ({
       autofocus: false,
