@@ -1,11 +1,19 @@
 import wiredLogo from "../assets/wired_logo.png";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+  const navigate = useNavigate();
+
   return (
     <footer className="flex flex-col text-center gap-2">
       <div className="flex justify-center text-[#336699] text-sm">
         <ul className="flex items-center gap-1">
-          <li className="hover:underline cursor-pointer">feedback</li>
+          <li
+            className="hover:underline cursor-pointer"
+            onClick={() => navigate("/feedback")}
+          >
+            feedback
+          </li>
           <span className="text-gray-500">|</span>
           <li className="hover:underline cursor-pointer">bookmarklets</li>
           <span className="text-gray-500">|</span>
@@ -15,9 +23,6 @@ const Footer = () => {
           >
             store
           </li>
-
-          <span className="text-gray-500">|</span>
-          <li className="hover:underline cursor-pointer">advertise</li>
         </ul>
       </div>
 

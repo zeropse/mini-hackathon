@@ -10,6 +10,7 @@ import Login from "./components/Login";
 import NewPost from "./components/NewPost";
 import PostDetails from "./pages/PostDetails";
 import RootLayout from "./layout/RootLayout";
+import Feedback from "./components/Feedback";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/new-post" element={<NewPost />} />
         <Route path="/:username/:id" element={<PostDetails />} />
+        <Route path="/feedback" element={<Feedback />} />
       </Route>
     )
   );
