@@ -175,7 +175,6 @@ app.post("/api/posts", authenticateToken, (req, res) => {
 app.get("/api/posts/:username/:id", (req, res) => {
   const { username, id } = req.params;
 
-  // Query the SQLite database to find the post by username and id
   const query = `SELECT * FROM posts WHERE username = ? AND id = ?`;
   db.get(query, [username, id], (err, post) => {
     if (err) {
@@ -186,7 +185,7 @@ app.get("/api/posts/:username/:id", (req, res) => {
     if (post) {
       res.json(post); // Send the post data as JSON
     } else {
-      res.status(404).json({ message: "Post not found" }); // If post doesn't exist
+      res.status(404).json({ message: "Post not found" });
     }
   });
 });
