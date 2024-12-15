@@ -10,14 +10,7 @@ CREATE TABLE posts (
     username TEXT NOT NULL,
 );
 
-
-INSERT INTO users (username, password) VALUES ('admin', 'yourmomma123');
-INSERT INTO posts (title, username)
-VALUES ('Test Post 1', 'admin');
-
-INSERT INTO posts (title, username)
-VALUES ('Test Post 2', 'admin');
-
+INSERT INTO users (username, password) VALUES ('admin', 'hellomello');
 
 DROP TABLE posts;
 DROP TABLE users;

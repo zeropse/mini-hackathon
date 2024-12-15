@@ -30,6 +30,7 @@ db.run(`
   CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
+    content TEXT NOT NULL,
     username TEXT NOT NULL
   )
 `);
@@ -129,6 +130,64 @@ app.get("/api/posts", (req, res) => {
       return res.status(500).json({ message: "Failed to fetch posts." });
     }
     res.json(rows);
+  });
+});
+
+// Middleware to authenticate the user using JWT
+function authenticateToken(req, res, next) {
+  const token = req.header("Authorization")?.split(" ")[1]; // Bearer <token>
+
+  if (!token) {
+    return res.status(403).json({ message: "No token provided" });
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: "Invalid token" });
+    }
+    req.user = user; // Attach the user (which contains the username) to the request object
+    next();
+  });
+}
+
+// Endpoint to create a new post
+app.post("/api/posts", authenticateToken, (req, res) => {
+  const { title, content } = req.body;
+  const { username } = req.user; // Get the username from the authenticated user
+
+  if (!title || !content) {
+    return res.status(400).json({ message: "Title and content are required." });
+  }
+
+  // Insert the new post into the database
+  const query = "INSERT INTO posts (title, content, username) VALUES (?, ?, ?)";
+  db.run(query, [title, content, username], function (err) {
+    if (err) {
+      return res
+        .status(500)
+        .json({ message: "Error inserting post", error: err.message });
+    }
+    res.status(201).json({ id: this.lastID, title, content, username });
+  });
+});
+
+// Route to fetch a post by username and id
+app.get("/api/posts/:username/:id", (req, res) => {
+  const { username, id } = req.params;
+
+  // Query the SQLite database to find the post by username and id
+  const query = `SELECT * FROM posts WHERE username = ? AND id = ?`;
+  db.get(query, [username, id], (err, post) => {
+    if (err) {
+      console.error("Error fetching post:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    if (post) {
+      res.json(post); // Send the post data as JSON
+    } else {
+      res.status(404).json({ message: "Post not found" }); // If post doesn't exist
+    }
   });
 });
 

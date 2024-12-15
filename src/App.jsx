@@ -8,6 +8,7 @@ import Posts from "./pages/Posts";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import NewPost from "./components/NewPost";
+import PostDetails from "./pages/PostDetails";
 import RootLayout from "./layout/RootLayout";
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/new-post" element={<NewPost />} />
+        <Route path="/:username/:id" element={<PostDetails />} />
       </Route>
     )
   );
